@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mission to Mars</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="text-center">
+        <h1>Mission to Mars</h1>
+        <p><a class="btn btn-primary btn-lg" href="/scrape" role="button">Scrape!</a></p>
+    </div>
+
+    <h2>{{ info.news_title }}</h2>
+    <p>{{ info.news_text }}</p>
+    <br>
+
+    <h2>Featured Mars Image</h2>
+    <img src="{{ info.featured_image_url }}" alt="Image of Mars' surface">
+    <br>
+
+    <div>
+        {{ info.table_str }}
+    </div>
+    <br>
+
+
+</body>
+</html>
