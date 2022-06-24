@@ -20,11 +20,36 @@
     <img src="{{ info.featured_image_url }}" alt="Image of Mars' surface">
     <br>
 
-    <div>
-        {{ info.table_str }}
-    </div>
-    <br>
+    <!-- rewrite -->
+    <table>{{ info.table_str[0] }}</table>
 
+    <div>
+        <h2>Mars Hemispheres</h2>
+        <div class="card" style="width: 18rem;">
+            <img src="{{ info.hemispheres[0].img_url }}" alt="{{ info.hemispheres[0].title }}">
+            <div class="card-body">
+              <h5 class="card-title">{{ info.hemispheres[0].title }}</h5>
+            </div>
+        </div>
+        <div class="card" style="width: 18rem;">
+            <img src="{{ info.hemispheres[1].img_url }}" alt="{{ info.hemispheres[1].title }}">
+            <div class="card-body">
+              <h5 class="card-title">{{ info.hemispheres[1].title }}</h5>
+            </div>
+        </div>
+        <div class="card" style="width: 18rem;">
+            <img src="{{ info.hemispheres[2].img_url }}" alt="{{ info.hemispheres[2].title }}">
+            <div class="card-body">
+              <h5 class="card-title">{{ info.hemispheres[2].title }}</h5>
+            </div>
+        </div>
+        <div class="card" style="width: 18rem;">
+            <img src="{{ info.hemispheres[3].img_url }}" alt="{{ info.hemispheres[3].title }}">
+            <div class="card-body">
+              <h5 class="card-title">{{ info.hemispheres[3].title }}</h5>
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>

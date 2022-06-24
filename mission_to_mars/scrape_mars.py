@@ -54,22 +54,28 @@ def scrape_info():
     # Visit marshemispheres
     browser.visit(url_hemi)
 
-    # Scrape page using beautifulsoup
+    # HTML Object
     html_hemi = browser.html
+
+    # Using Beautiful Soup
     soup_hemi = bs(html_hemi, 'html.parser')
-    hemispheres = soup_hemi.find_all('img', class_='thumb')
+
+    # Identifying elements with needed information
+    hemispheres = soup_hemi.find_all('div', class_='description')
 
     # Iterate through list of results to find image data
     hemisphere_image_urls = []
-
+    # Iterate through list of results to find image data
     for h in hemispheres:
+        
         # Save name of image
-        img_alt = h['alt']
-        hem_name = img_alt.replace(' Enhanced thumbnail','')
+        img_name = h.find('h3')
+        hem_name = img_name.text
 
-        # Save and edit image url
-        img_src = h['src']
-        hem_img = url_hemi + img_src.replace('_thumb.png','')
+        # Save image information
+        img_src = 'images/' + hem_name.replace(' Hemisphere Enhanced','_enhanced.tif')
+        hem_img = url_hemi + img_src.lower().replace(' ','_')
+        #print(img_url)
 
         # Save name and image url as a key:value pair
         hem_dict = {'title': hem_name, 'img_url': hem_img}
