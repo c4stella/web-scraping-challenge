@@ -14,7 +14,7 @@ def scrape_info():
     url_info = 'https://galaxyfacts-mars.com'
     url_hemi = 'https://marshemispheres.com/'
 
-    # Visit redplanetscience
+    # Using redplanetscience ----------------------------------------------------------
     browser.visit(url_news)
 
     # Scrape page using beautifulsoup
@@ -25,9 +25,10 @@ def scrape_info():
     # Get featured article title and text
     news_title = article.find('div', class_='content_title').text
     news_text = article.find('div', class_='article_teaser_body').text
+    # ---------------------------------------------------------------------------------
 
 
-    # Visit spaceimages
+    # Visit spaceimages ---------------------------------------------------------------
     browser.visit(url_imgs)
 
     # Scrape page using beautifulsoup
@@ -37,60 +38,80 @@ def scrape_info():
 
     # Get image url of featured image
     featured_image_url = url_imgs + '/' + image['src']
+    # ---------------------------------------------------------------------------------
 
 
-    # Read in html table from page using pandas
+    # Scraping tablular data with pandas ----------------------------------------------
     html_info = pd.read_html(url_info)
 
-    # Iterate through list of table data
-    html_str_info = []
-
-    for tab in html_info:
-        # Render tables as html strings, append to empty list
-        html_str = tab.to_html()
-        html_str_info.append(html_str)
+    # Saving html string to variable
+    table_str = html_info[0].to_html(classes='table')
+    # ---------------------------------------------------------------------------------
 
 
-    # Visit marshemispheres
+    # Visit marshemispheres -----------------------------------------------------------
     browser.visit(url_hemi)
 
-    # HTML Object
+    # Scrape page using beautifulsoup
     html_hemi = browser.html
-
-    # Using Beautiful Soup
     soup_hemi = bs(html_hemi, 'html.parser')
-
-    # Identifying elements with needed information
     hemispheres = soup_hemi.find_all('div', class_='description')
 
-    # Iterate through list of results to find image data
-    hemisphere_image_urls = []
+    # Empty lists for iteration
+    hem_title = []
+    hemisphere_pages = []
+
     # Iterate through list of results to find image data
     for h in hemispheres:
         
         # Save name of image
         img_name = h.find('h3')
         hem_name = img_name.text
+        hem_title.append(hem_name)
 
-        # Save image information
-        img_src = 'images/' + hem_name.replace(' Hemisphere Enhanced','_enhanced.tif')
-        hem_img = url_hemi + img_src.lower().replace(' ','_')
-        #print(img_url)
+        # Save urls of each hemisphere page, to visit later for full images
+        hemlink = h.find('a')
+        hemurl = url_hemi + hemlink['href']
+        hemisphere_pages.append(hemurl)
+
+    # Empty list for iteration
+    hem_img_urls = []
+
+    # Iterate through list of urls to find full images
+    for p in hemisphere_pages:
+
+        # Visit url specified
+        browser.visit(p)
+
+        # Setting up html and soup
+        current_html = browser.html
+        current_soup = bs(current_html, 'html.parser')
+
+        # Find object with image, extract its link
+        hem_img = current_soup.find('img', class_='wide-image')
+        hem_img_url = url_hemi + hem_img['src']
+
+        # Save image url
+        hem_img_urls.append(hem_img_url)
+    
+    # Empty list for iteration
+    hem = []
+
+    # Iterate through lists of titles and urls, with 4 items each
+    for i in range(4):
 
         # Save name and image url as a key:value pair
-        hem_dict = {'title': hem_name, 'img_url': hem_img}
+        hem_dict = {'title': hem_title[i - 1], 'img_url': hem_img_urls[i - 1]}
+        hem.append(hem_dict)
+    # ---------------------------------------------------------------------------------
 
-        # Append dictionaries to empty list
-        hemisphere_image_urls.append(hem_dict)
-
-
-    # Store results
+    # Store results -------------------------------------------------------------------
     mars_data = {
         'news_title': news_title,
         'news_text': news_text,
         'featured_image_url': featured_image_url,
-        'table_str': html_str_info,
-        'hemispheres': hemisphere_image_urls
+        'table_str': table_str,
+        'hemispheres': hem
     }
     
     browser.quit()
